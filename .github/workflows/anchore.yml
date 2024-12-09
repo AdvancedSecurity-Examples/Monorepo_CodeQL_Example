@@ -1,0 +1,40 @@
+name: Anchore Container Scan
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'advanced-security-docker/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'advanced-security-docker/**'
+
+jobs:
+  Anchore-Build-Scan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        images: [ 'server.Dockerfile' ]
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: advanced-security-docker
+
+    - name: Build the Docker image
+      working-directory: ./advanced-security-docker
+      run: docker build . --file ${{ matrix.images }} --tag octodemo/scan-image:latest
+
+    - uses: anchore/scan-action@v3
+      id: scan
+      with:
+        image: "octodemo/scan-image:latest"
+        fail-build: false
+
+    - name: upload Anchore scan SARIF report
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarif }}
