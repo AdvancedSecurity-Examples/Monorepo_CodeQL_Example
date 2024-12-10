@@ -1,0 +1,14 @@
+.add-account
+  = form_for(@bankaccount) do |f| 
+    = render 'shared/error_messages', object: f.object
+    .field
+      %h2 Add a new bank account: 
+      %h4= 'Just enter your account number, give it a name and we will download the rest' 
+      %br
+      = f.text_field :account_name, placeholder: "Account Name...", :class => "input-xlarge"
+      = f.text_field :account_number, placeholder: "Account Number...", :class => "input-xlarge"
+      %p Verify Your Account by Uploading a Bank Statement:
+      %p Note: If you don't do this now, you'll have to delete the account and add it again.
+      = f.file_field :bankstatement
+  
+      = f.submit "Submit", class: "btn btn-large btn-primary"

@@ -1,0 +1,32 @@
+.row
+  %aside.span4
+    %section
+      -if @user.avatar
+        =image_tag("/"+@user.avatar, :class => "gravatar")
+      -if !@user.avatar
+        =image_tag("/mysteryman.jpg", :class => "gravatars")
+      %h1= @user.name
+  - if @admin == true
+    .span8
+      %h1 Admin Panel
+      %p  
+        Total Transfers: 
+        ~@all_transfers.count
+      ~render 'admin_transfer'
+  - else
+    .span8
+      ~ unless !current_user?(@user)
+        ~ render 'transfer_form'
+        %h1 Transfers I've Received
+        -if @transfers_to_me.any?
+          Transfer History:  
+          ~@transfers_to_me.count
+          %ol.transfers
+            ~render 'transfers_to_me'
+        %h1 Transfers I've Made
+        -if @transfers.any?
+          Transfer History:  
+          ~@transfers.count
+      
+        %ol.transfers
+          ~render 'transfer'

@@ -1,0 +1,19 @@
+.row
+  %aside.span4
+    %section
+      -if @user.avatar
+        =image_tag("/"+@user.avatar, :class => "gravatar")
+      -if !@user.avatar
+        =image_tag("/mysteryman.jpg", :class => "gravatars")
+      %h1= @user.name
+
+  .span8
+    = unless !current_user?(@user)
+      = render 'shared/bankaccount_form'
+      -if @user.bankaccounts.any?
+        %h2 
+          My Bank Accounts:  
+          ~@user.bankaccounts.count
+          Listed
+        %ol.bankaccounts
+          ~render 'bankaccounts/bankaccount'
